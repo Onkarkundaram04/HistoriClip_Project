@@ -92,6 +92,7 @@ service-account.json
 # ─────────────────────────────────────────────────────────────
 *.drawio
 /Images/
+/Draw.io diagrams/
 
 # ─────────────────────────────────────────────────────────────
 #  LaTeX / Research paper files (not part of the project)

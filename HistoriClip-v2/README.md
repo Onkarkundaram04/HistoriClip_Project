@@ -96,11 +96,9 @@ We have prepared a **bulletproof, comprehensive step-by-step guide** for configu
 
 This project was developed collaboratively as a Final Year University Project by:
 
-*   **[Full Name 1]** - Role / Contribution
-*   **[Full Name 2]** - Role / Contribution
-*   **[Full Name 3]** - Role / Contribution
-
-*(Note: Replace the names and roles above with your actual team member details).*
+*   **Onkar Kundaram** - Role / Contribution
+*   **Vishwas Kude** - Role / Contribution
+*   **Prajwal Khobragade** - Role / Contribution
 
 ---
 
