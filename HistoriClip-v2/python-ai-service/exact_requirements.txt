@@ -1,0 +1,136 @@
+# ============================================================
+# HistoriClip - Exact Frozen Pip Requirements
+# ============================================================
+# ✅ USE THIS if the Conda YAML method (exact_environment.yml) fails.
+#
+# Tested on: Python 3.11.14 | PyTorch 2.5.1 | CUDA 12.1 | Windows 10/11
+# Every version below is pinned — guaranteed zero dependency conflicts.
+# ============================================================
+#
+# INSTALL STEPS (in order):
+#   1. conda create -n historiclip python=3.11.14 -y
+#   2. conda activate historiclip
+#   3. conda install pytorch==2.5.1 torchvision==0.20.1 pytorch-cuda=12.1 -c pytorch -c nvidia -y
+#   4. conda install -c nvidia cuda-toolkit=12.1.0 -y
+#   5. pip install -r exact_requirements.txt
+#
+# See ENVIRONMENT_SETUP.md for full instructions.
+# ============================================================
+
+accelerate==1.12.0
+aiohappyeyeballs==2.6.1
+aiohttp==3.13.3
+aiosignal==1.4.0
+annotated-doc==0.0.4
+antlr4-python3-runtime==4.9.3
+anyio==4.12.1
+attrs==25.4.0
+# bitsandbytes: Official PyPI does NOT support Windows.
+# This is a community-built Windows wheel. If the URL breaks, search for
+# "bitsandbytes windows wheel" on GitHub for an updated link.
+bitsandbytes @ https://github.com/jllllll/bitsandbytes-windows-webui/releases/download/wheels/bitsandbytes-0.41.1-py3-none-win_amd64.whl
+blinker==1.9.0
+brotlicffi==1.2.0.0
+certifi==2026.1.31
+cffi==2.0.0
+charset-normalizer==3.4.4
+click==8.3.1
+colorama==0.4.6
+contourpy==1.3.3
+cryptography==46.0.5
+cycler==0.12.1
+decorator==5.2.1
+diffusers==0.30.3
+edge-tts==7.2.7
+ExifRead==3.5.1
+faiss-cpu==1.13.2
+filelock==3.20.3
+Flask==3.0.0
+Flask-Cors==4.0.0
+fonttools==4.61.1
+frozenlist==1.8.0
+fsspec==2026.2.0
+geographiclib==2.1
+geopandas==1.1.2
+geopy==2.4.1
+google-ai-generativelanguage==0.4.0
+google-api-core==2.29.0
+google-auth==2.48.0
+google-cloud-vision==3.5.0
+google-generativeai==0.3.0
+googleapis-common-protos==1.72.0
+grpcio==1.78.0
+grpcio-status==1.62.3
+h11==0.16.0
+hf-xet==1.2.0
+httpcore==1.0.9
+httpx==0.28.1
+huggingface_hub==0.36.2
+idna==3.11
+ImageIO==2.37.2
+imageio-ffmpeg==0.6.0
+importlib_metadata==8.7.1
+itsdangerous==2.2.0
+Jinja2==3.1.6
+kiwisolver==1.4.9
+kornia==0.8.2
+kornia_rs==0.1.10
+markdown-it-py==4.0.0
+MarkupSafe==3.0.2
+matplotlib==3.10.8
+mdurl==0.1.2
+moviepy==2.2.1
+mpmath==1.3.0
+multidict==6.7.1
+networkx==3.6.1
+numpy==2.0.1
+omegaconf==2.3.0
+opencv-python==4.13.0.92
+osmnx==2.0.7
+packaging==25.0
+pandas==3.0.0
+pillow==11.1.0
+proglog==0.1.12
+propcache==0.4.1
+proto-plus==1.27.1
+protobuf==4.25.8
+psutil==7.2.2
+pyasn1==0.6.2
+pyasn1_modules==0.4.2
+pycparser==2.23
+Pygments==2.19.2
+pyogrio==0.12.1
+pyparsing==3.3.2
+pyproj==3.7.2
+PySocks==1.7.1
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.1
+PyYAML==6.0.3
+RapidFuzz==3.14.3
+rdflib==7.5.0
+regex==2026.1.15
+requests==2.32.5
+rich==14.3.2
+rsa==4.9.1
+safetensors==0.7.0
+scipy==1.17.0
+sentencepiece==0.2.1
+shapely==2.1.2
+shellingham==1.5.4
+six==1.17.0
+SPARQLWrapper==2.0.0
+sympy==1.13.1
+tabulate==0.9.0
+tokenizers==0.19.1
+tqdm==4.67.3
+transformers==4.44.2
+typer==0.22.0
+typer-slim==0.22.0
+typing_extensions==4.15.0
+tzdata==2025.3
+urllib3==2.6.3
+Werkzeug==3.1.5
+Wikipedia-API==0.9.0
+win_inet_pton==1.1.0
+yarl==1.22.0
+zipp==3.23.0

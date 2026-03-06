@@ -1,0 +1,143 @@
+# ============================================================
+#  HistoriClip V2 — Root .gitignore
+# ============================================================
+
+# ─────────────────────────────────────────────────────────────
+#  Environment & Secret files
+# ─────────────────────────────────────────────────────────────
+.env
+*.env.local
+.env.development
+.env.production
+.env.staging
+
+# ─────────────────────────────────────────────────────────────
+#  Dependencies
+# ─────────────────────────────────────────────────────────────
+node_modules/
+package-lock.json
+
+# ─────────────────────────────────────────────────────────────
+#  Python
+# ─────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+venv/
+.venv/
+env/
+.conda/
+*.whl
+
+# ─────────────────────────────────────────────────────────────
+#  AI / ML — Large model files (25+ GB)
+# ─────────────────────────────────────────────────────────────
+HistoriClip-v2/python-ai-service/models/*.safetensors
+HistoriClip-v2/python-ai-service/models/*.ckpt
+HistoriClip-v2/python-ai-service/models/*.pt
+HistoriClip-v2/python-ai-service/models/*.pth
+HistoriClip-v2/python-ai-service/models/*.bin
+*.onnx
+
+
+
+# ─────────────────────────────────────────────────────────────
+#  AI / ML — Cache (Gemini / API response caches)
+# ─────────────────────────────────────────────────────────────
+HistoriClip-v2/python-ai-service/cache/
+
+# ─────────────────────────────────────────────────────────────
+#  Backend — Uploaded & generated media (runtime artifacts)
+# ─────────────────────────────────────────────────────────────
+HistoriClip-v2/backend/uploads/*
+!HistoriClip-v2/backend/uploads/.gitkeep
+
+# ─────────────────────────────────────────────────────────────
+#  Logs
+# ─────────────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ─────────────────────────────────────────────────────────────
+#  Build output
+# ─────────────────────────────────────────────────────────────
+dist/
+dist-ssr/
+build/
+*.local
+
+# ─────────────────────────────────────────────────────────────
+#  Testing & Coverage
+# ─────────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ─────────────────────────────────────────────────────────────
+#  Google Cloud / API credentials
+# ─────────────────────────────────────────────────────────────
+*-key.json
+google-vision-key.json
+service-account.json
+
+# ─────────────────────────────────────────────────────────────
+#  Draw.io diagrams & diagram images (not needed for project to run)
+# ─────────────────────────────────────────────────────────────
+*.drawio
+/Images/
+
+# ─────────────────────────────────────────────────────────────
+#  LaTeX / Research paper files (not part of the project)
+# ─────────────────────────────────────────────────────────────
+*.tex
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.out
+
+# ─────────────────────────────────────────────────────────────
+#  Baseline evaluation (separate experiment, not core project)
+# ─────────────────────────────────────────────────────────────
+baseline_evaluation/
+
+# ─────────────────────────────────────────────────────────────
+#  IDE / Editor
+# ─────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ─────────────────────────────────────────────────────────────
+#  OS-generated files
+# ─────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+ehthumbs_vista.db
+
+# ─────────────────────────────────────────────────────────────
+#  Agent / AI assistant metadata
+# ─────────────────────────────────────────────────────────────
+.qoder/
+.gemini/
+.agents/
+.agent/
+_agents/
+_agent/

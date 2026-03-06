@@ -1,0 +1,408 @@
+/* ============================================
+   HistoriClip - Global Styles (React)
+   Modern, premium design with dark theme, glassmorphism and micro-animations
+   ============================================ */
+
+/* CSS Variables */
+:root {
+    /* Colors - Vibrant and Harmonious */
+    --primary: #6366f1;
+    /* Indigo */
+    --primary-hover: #4f46e5;
+    --primary-light: rgba(99, 102, 241, 0.15);
+
+    --secondary: #10b981;
+    /* Emerald */
+    --accent: #f59e0b;
+    /* Amber */
+    --danger: #ef4444;
+    /* Red */
+    --info: #3b82f6;
+    /* Blue */
+
+    /* Dark Theme */
+    --bg-dark: #09090e;
+    /* Even darker for premium feel */
+    --bg-card: rgba(26, 26, 46, 0.6);
+    /* Glassmorphism base */
+    --bg-card-hover: rgba(37, 37, 66, 0.8);
+    --bg-input: rgba(22, 22, 42, 0.8);
+
+    /* Glassmorphism Borders */
+    --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+    --glass-border-light: 1px solid rgba(255, 255, 255, 0.15);
+
+    /* Text */
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+
+    /* Borders */
+    --border-color: #2d2d44;
+    --border-radius: 16px;
+    --border-radius-sm: 8px;
+    --border-radius-lg: 24px;
+    --border-radius-full: 9999px;
+
+    /* Shadows - Deep & Sophisticated */
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.4);
+    --shadow-glow-hover: 0 0 60px rgba(99, 102, 241, 0.6);
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+    --gradient-primary-hover: linear-gradient(135deg, #4f46e5 0%, #9333ea 50%, #db2777 100%);
+    --gradient-dark: linear-gradient(180deg, #09090e 0%, #11111a 100%);
+
+    --nav-bg: rgba(9, 9, 14, 0.92);
+    --hero-accent-1: rgba(99, 102, 241, 0.08);
+    --hero-accent-2: rgba(245, 158, 11, 0.08);
+    --surface-border-soft: rgba(255, 255, 255, 0.08);
+    --surface-border-medium: rgba(255, 255, 255, 0.1);
+    --surface-bg-soft: rgba(255, 255, 255, 0.02);
+    --section-muted-bg: rgba(0, 0, 0, 0.2);
+    --cta-bg: linear-gradient(180deg, rgba(99, 102, 241, 0.12), rgba(9, 9, 14, 0.12));
+
+    --outline-btn-border: rgba(255, 255, 255, 0.16);
+    --outline-btn-border-hover: rgba(255, 255, 255, 0.32);
+    --outline-btn-bg: rgba(255, 255, 255, 0.02);
+    --outline-btn-bg-hover: rgba(255, 255, 255, 0.06);
+    --outline-btn-text-hover: #ffffff;
+    --ghost-btn-bg-hover: rgba(255, 255, 255, 0.06);
+    --ghost-btn-text-hover: #ffffff;
+
+    --theme-toggle-bg: rgba(255, 255, 255, 0.04);
+    --theme-toggle-bg-hover: rgba(255, 255, 255, 0.09);
+    --theme-toggle-border: rgba(255, 255, 255, 0.2);
+    --theme-toggle-border-hover: rgba(255, 255, 255, 0.34);
+    --theme-toggle-color: #ffffff;
+
+    --input-bg: rgba(255, 255, 255, 0.03);
+    --input-bg-focus: rgba(255, 255, 255, 0.06);
+    --input-text: #ffffff;
+    --input-icon-color: rgba(255, 255, 255, 0.45);
+    --primary-soft-bg: rgba(99, 102, 241, 0.1);
+    --primary-soft-border: rgba(99, 102, 241, 0.46);
+    --secondary-soft-border: rgba(16, 185, 129, 0.42);
+
+    --auth-error-border: rgba(239, 68, 68, 0.35);
+    --auth-error-bg: rgba(127, 29, 29, 0.18);
+    --auth-error-text: #fca5a5;
+
+    --status-chip-border: rgba(255, 255, 255, 0.2);
+    --status-completed-bg: rgba(16, 185, 129, 0.24);
+    --status-completed-text: #a7f3d0;
+    --status-processing-bg: rgba(245, 158, 11, 0.28);
+    --status-processing-text: #fde68a;
+    --status-failed-bg: rgba(239, 68, 68, 0.24);
+    --status-failed-text: #fecaca;
+
+    --history-checkbox-bg: rgba(2, 6, 23, 0.38);
+    --history-checkbox-border: rgba(255, 255, 255, 0.34);
+    --history-checkbox-mark-bg: rgba(255, 255, 255, 0.06);
+    --history-checkbox-mark-border: rgba(255, 255, 255, 0.55);
+    --history-checkbox-mark-fill: #ffffff;
+
+    --danger-soft-border: rgba(239, 68, 68, 0.44);
+    --danger-soft-bg: rgba(239, 68, 68, 0.08);
+    --danger-soft-text: #f87171;
+    --danger-soft-border-hover: rgba(239, 68, 68, 0.66);
+    --danger-soft-bg-hover: rgba(239, 68, 68, 0.14);
+    --danger-soft-text-hover: #fca5a5;
+
+    --xai-verified-yes-bg: rgba(16, 185, 129, 0.15);
+    --xai-verified-yes-text: #34d399;
+    --xai-verified-yes-border: rgba(16, 185, 129, 0.3);
+    --xai-verified-weak-bg: rgba(245, 158, 11, 0.12);
+    --xai-verified-weak-text: #fbbf24;
+    --xai-verified-weak-border: rgba(245, 158, 11, 0.3);
+
+    /* Transitions */
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --bounce-spring: 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Font */
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+html[data-theme='light'] {
+    --bg-dark: #f4f7ff;
+    --bg-card: rgba(255, 255, 255, 0.86);
+    --bg-card-hover: rgba(255, 255, 255, 0.98);
+    --bg-input: rgba(255, 255, 255, 0.92);
+
+    --glass-border: 1px solid rgba(15, 23, 42, 0.12);
+    --glass-border-light: 1px solid rgba(15, 23, 42, 0.2);
+
+    --text-primary: #101828;
+    --text-secondary: #344054;
+    --text-muted: #667085;
+    --border-color: #d0d5dd;
+
+    --shadow-sm: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -1px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 10px 15px -3px rgba(15, 23, 42, 0.12), 0 4px 6px -2px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 25px -5px rgba(15, 23, 42, 0.14), 0 10px 10px -5px rgba(15, 23, 42, 0.1);
+
+    --gradient-dark: linear-gradient(180deg, #f8faff 0%, #eef2ff 100%);
+    --nav-bg: rgba(255, 255, 255, 0.9);
+    --hero-accent-1: rgba(99, 102, 241, 0.11);
+    --hero-accent-2: rgba(245, 158, 11, 0.1);
+
+    --surface-border-soft: rgba(15, 23, 42, 0.1);
+    --surface-border-medium: rgba(15, 23, 42, 0.14);
+    --surface-bg-soft: rgba(15, 23, 42, 0.03);
+    --section-muted-bg: rgba(99, 102, 241, 0.06);
+    --cta-bg: linear-gradient(180deg, rgba(99, 102, 241, 0.16), rgba(255, 255, 255, 0.7));
+
+    --outline-btn-border: rgba(15, 23, 42, 0.18);
+    --outline-btn-border-hover: rgba(15, 23, 42, 0.3);
+    --outline-btn-bg: rgba(15, 23, 42, 0.02);
+    --outline-btn-bg-hover: rgba(15, 23, 42, 0.06);
+    --outline-btn-text-hover: #101828;
+    --ghost-btn-bg-hover: rgba(15, 23, 42, 0.06);
+    --ghost-btn-text-hover: #101828;
+
+    --theme-toggle-bg: rgba(15, 23, 42, 0.05);
+    --theme-toggle-bg-hover: rgba(15, 23, 42, 0.1);
+    --theme-toggle-border: rgba(15, 23, 42, 0.2);
+    --theme-toggle-border-hover: rgba(15, 23, 42, 0.36);
+    --theme-toggle-color: #111827;
+
+    --input-bg: rgba(15, 23, 42, 0.03);
+    --input-bg-focus: rgba(99, 102, 241, 0.08);
+    --input-text: #111827;
+    --input-icon-color: rgba(17, 24, 39, 0.5);
+    --primary-soft-bg: rgba(99, 102, 241, 0.16);
+    --primary-soft-border: rgba(79, 70, 229, 0.48);
+    --secondary-soft-border: rgba(5, 150, 105, 0.44);
+
+    --auth-error-border: rgba(220, 38, 38, 0.3);
+    --auth-error-bg: rgba(254, 242, 242, 0.92);
+    --auth-error-text: #b42318;
+
+    --status-chip-border: rgba(15, 23, 42, 0.18);
+    --status-completed-bg: rgba(16, 185, 129, 0.14);
+    --status-completed-text: #047857;
+    --status-processing-bg: rgba(245, 158, 11, 0.16);
+    --status-processing-text: #b54708;
+    --status-failed-bg: rgba(239, 68, 68, 0.14);
+    --status-failed-text: #b42318;
+
+    --history-checkbox-bg: rgba(255, 255, 255, 0.82);
+    --history-checkbox-border: rgba(15, 23, 42, 0.22);
+    --history-checkbox-mark-bg: rgba(15, 23, 42, 0.03);
+    --history-checkbox-mark-border: rgba(15, 23, 42, 0.42);
+    --history-checkbox-mark-fill: #4f46e5;
+
+    --danger-soft-border: rgba(220, 38, 38, 0.3);
+    --danger-soft-bg: rgba(254, 242, 242, 0.9);
+    --danger-soft-text: #b42318;
+    --danger-soft-border-hover: rgba(220, 38, 38, 0.45);
+    --danger-soft-bg-hover: rgba(254, 226, 226, 0.95);
+    --danger-soft-text-hover: #912018;
+
+    --xai-verified-yes-bg: rgba(16, 185, 129, 0.12);
+    --xai-verified-yes-text: #027a48;
+    --xai-verified-yes-border: rgba(16, 185, 129, 0.28);
+    --xai-verified-weak-bg: rgba(245, 158, 11, 0.14);
+    --xai-verified-weak-text: #b54708;
+    --xai-verified-weak-border: rgba(245, 158, 11, 0.28);
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-family);
+    background: var(--bg-dark);
+    background-image:
+        radial-gradient(circle at 15% 50%, var(--hero-accent-1) 0%, transparent 42%),
+        radial-gradient(circle at 85% 30%, var(--hero-accent-2) 0%, transparent 42%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+a:hover {
+    color: var(--primary-hover);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Container */
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    width: 100%;
+}
+
+/* Typography Utilities */
+.text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+/* Flexbox Utilities */
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+.gap-6 {
+    gap: 1.5rem;
+}
+
+.gap-8 {
+    gap: 2rem;
+}
+
+/* Grid Utilities */
+.grid {
+    display: grid;
+}
+
+.grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+    .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .md\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Animation Utilities */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+}
+
+.stagger-1 {
+    animation-delay: 0.1s;
+    opacity: 1;
+}
+
+.stagger-2 {
+    animation-delay: 0.2s;
+    opacity: 1;
+}
+
+.stagger-3 {
+    animation-delay: 0.3s;
+    opacity: 1;
+}
+
+.stagger-4 {
+    animation-delay: 0.4s;
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login to HistoriClip">
+    <title>Login - HistoriClip</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="auth-page">
+    <!-- Back to Home -->
+    <a href="index.html" class="back-home">← Back to Home</a>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Logo -->
+            <div class="auth-logo">
+                <span class="logo-icon">🎬</span>
+                <span class="logo-text">HistoriClip</span>
+            </div>
+
+            <h1>Welcome Back</h1>
+            <p class="auth-subtitle">Login to continue creating documentaries</p>
+
+            <!-- Error Message -->
+            <div class="alert alert-error" id="errorAlert" style="display: none;">
+                <span id="errorMessage"></span>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required
+                        autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required
+                        autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+                    <span class="btn-text">Login</span>
+                    <span class="btn-loader" style="display: none;">⏳</span>
+                </button>
+            </form>
+
+            <p class="auth-footer">
+                Don't have an account? <a href="signup.html">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/auth.js"></script>
+</body>
+
+</html>

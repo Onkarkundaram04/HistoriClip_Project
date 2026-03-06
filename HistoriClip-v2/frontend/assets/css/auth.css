@@ -1,0 +1,136 @@
+/* ============================================
+   HistoriClip - Auth Pages Styles
+   ============================================ */
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-dark);
+    padding: 24px;
+}
+
+.back-home {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.back-home:hover {
+    color: var(--primary);
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 40px;
+    box-shadow: var(--shadow-lg);
+}
+
+.auth-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 32px;
+}
+
+.auth-card h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+}
+
+/* Form Styles */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.form-group input {
+    padding: 14px 16px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    color: var(--text-primary);
+    font-size: 15px;
+    font-family: var(--font-family);
+    transition: var(--transition-fast);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.form-group input::placeholder {
+    color: var(--text-muted);
+}
+
+/* Button Loading State */
+.btn-loader {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Footer Link */
+.auth-footer {
+    text-align: center;
+    margin-top: 24px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.auth-footer a {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 24px;
+    }
+}

@@ -1,0 +1,140 @@
+# ============================================================
+# HistoriClip - Python AI Service Dependencies
+# ============================================================
+# ⚠️  THIS FILE IS FOR REFERENCE ONLY — DO NOT install directly!
+#     It shows minimum versions and documents what each package does.
+#
+#     To set up your environment, use one of these instead:
+#       → exact_environment.yml      (conda, recommended)
+#       → exact_requirements.txt     (pip, after installing PyTorch via conda)
+#
+#     See ENVIRONMENT_SETUP.md for full instructions.
+# ============================================================
+
+# Web Framework
+flask==3.0.0
+flask-cors==4.0.0
+
+# Google Cloud APIs
+
+google-generativeai==0.3.0
+
+# ============================================================
+# AI/ML - PyTorch + Deep Learning Core
+# ============================================================
+# CUDA 12.x Support (Required for RTX 4050)
+# IMPORTANT: Install with CUDA 12.x backend for GPU acceleration:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+# 
+# For CUDA 11.8 (if you have older CUDA toolkit):
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+#
+# Python 3.12 Compatibility: ✅ Works with CUDA 12.x and Python 3.12
+
+torch>=2.1.0
+torchvision>=0.16.0
+transformers>=4.36.0
+accelerate>=0.25.0
+
+# ============================================================
+# AI/ML - Stable Diffusion XL (Juggernaut XL v9)
+# ============================================================
+# Used for historical monument image generation
+# Model: RunDiffusion/Juggernaut-XL-v9 (photorealistic, 6GB VRAM compatible)
+
+diffusers>=0.25.0
+safetensors>=0.4.0
+
+# Memory-efficient attention for faster generation
+# CRITICAL: Speeds up image generation 30-40% on RTX 4050
+# NOTE: Installed manually in Step 6 to avoid conflicts. Do not uncomment.
+# xformers>=0.0.23
+
+# ControlNet for precise image control (optional)
+# controlnet-aux>=0.0.7
+
+# ============================================================
+# AI/ML - DINOv2 & Location Engine
+# ============================================================
+# FAISS - Fast Similarity Search
+# For GPU: pip install faiss-gpu
+# For CPU: pip install faiss-cpu
+faiss-cpu>=1.7.4
+
+# Road Network Sampling (OSMnx)
+# Used by data_collector.py to sample along actual roads
+osmnx>=1.7.0
+networkx>=3.2.0
+
+# LightGlue Geometric Verification (XAI)
+# Kornia v0.7+ bundles LightGlue for keypoint matching
+kornia>=0.7.0
+kornia-rs>=0.1.0
+
+# ============================================================
+# Text-to-Speech
+# ============================================================
+edge-tts>=6.1.9
+
+# ============================================================
+# Image Processing
+# ============================================================
+opencv-python>=4.8.0.76
+pillow>=10.1.0
+
+# ============================================================
+# Video Processing
+# ============================================================
+moviepy>=1.0.3
+imageio-ffmpeg>=0.4.9
+
+# ============================================================
+# Data Processing
+# ============================================================
+pandas>=2.1.0
+numpy>=1.26.0
+
+# ============================================================
+# Visualization (Attention Maps / XAI)
+# ============================================================
+matplotlib>=3.8.0
+
+# ============================================================
+# UNESCO Fuzzy Matching
+# ============================================================
+rapidfuzz>=3.5.2
+
+# ============================================================
+# Geocoding & Location
+# ============================================================
+geopy>=2.4.0
+requests>=2.31.0
+
+# ============================================================
+# Wikipedia/Wikidata
+# ============================================================
+wikipedia-api>=0.6.0
+SPARQLWrapper>=2.0.0
+
+# ============================================================
+# Utilities
+# ============================================================
+python-dotenv>=1.0.0
+
+# EXIF Data Extraction (for GPS from photos)
+exifread>=3.0.0
+
+# Model downloading from HuggingFace Hub
+huggingface-hub>=0.20.0
+
+# Tokenizer support (required by transformers for MT5Tokenizer etc.)
+sentencepiece>=0.1.99
+protobuf>=4.25.0
+
+# ============================================================
+# Optional: Advanced Image Generation Tools
+# ============================================================
+# Uncomment if you want to experiment with these:
+
+# compel>=2.0.0              # Advanced prompt weighting for SDXL
+# invisible-watermark>=0.2.0  # Watermarking generated images
