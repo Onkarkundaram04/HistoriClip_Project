@@ -1,111 +1,98 @@
-<div align="center">
+<p align="center">
+	<img src="https://capsule-render.vercel.app/api?type=waving&height=220&color=0:0F172A,50:1D4ED8,100:0EA5E9&text=HistoriClip&fontColor=FFFFFF&fontSize=64&fontAlignY=38&desc=Street%20Image%20to%20AI%20Historical%20Documentary&descAlignY=58&animation=fadeIn" alt="HistoriClip Banner" />
+</p>
 
-# 🎞️ HistoriClip
+<p align="center">
+	<a href="./HistoriClip-v2/ENVIRONMENT_SETUP.md"><img src="https://img.shields.io/badge/Setup-Environment%20Guide-0F172A?style=flat-square&logo=readthedocs&logoColor=white" alt="Setup Guide" /></a>
+	<a href="https://github.com/Onkarkundaram04/HistoriClip_Project/commits"><img src="https://img.shields.io/github/last-commit/Onkarkundaram04/HistoriClip_Project?style=flat-square&logo=github&logoColor=white&color=1E293B" alt="Last Commit" /></a>
+	<img src="https://img.shields.io/github/repo-size/Onkarkundaram04/HistoriClip_Project?style=flat-square&logo=github&logoColor=white&color=0369A1&label=size" alt="Repository Size" />
+</p>
 
-**An AI-Powered Historical Documentary Video Generator from Street-Level Imagery**
+<p align="center">
+	<img src="https://img.shields.io/badge/Node.js-18.x%20%7C%2020.x-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js" />
+	<img src="https://img.shields.io/badge/React-19.x-61DAFB?style=flat-square&logo=react&logoColor=111827" alt="React" />
+	<img src="https://img.shields.io/badge/Python-3.11.14-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
+	<img src="https://img.shields.io/badge/PyTorch-2.5.1-EE4C2C?style=flat-square&logo=pytorch&logoColor=white" alt="PyTorch" />
+	<img src="https://img.shields.io/badge/MySQL-8.x-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL" />
+</p>
 
-[![Node.js](https://img.shields.io/badge/Node.js-18.x%20%7C%2020.x-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![React](https://img.shields.io/badge/React-19.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
-[![Python](https://img.shields.io/badge/Python-3.11.14-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.5.1-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
-
-[Features](#-key-features) • [Architecture](#-system-architecture) • [Tech Stack](#-tech-stack) • [Installation](#-getting-started) • [Team](#-team)
-
-</div>
-
----
-
-## 📖 Overview
-
-**HistoriClip** is a full-stack AI platform designed to dynamically generate rich, historical documentary-style videos based purely on street-level user imagery. 
-
-By simply uploading an image of a historical landmark, HistoriClip automatically identifies the location, verifies the architectural geometry, fetches relevant historical context, and generates a compelling, fully narrated documentary video complete with historically accurate, stylized AI images and Ken Burns visual effects.
-
-This project was built to address the gap in automated, context-aware multimedia generation for heritage sites, making history accessible, visually spectacular, and highly engaging.
+<p align="center">
+	<a href="#Quick_overview">Quick overview</a> | <a href="#production-pipeline">Production Pipeline</a> | <a href="#system-blueprint">System Blueprint</a> | <a href="#quick-launch">Quick Launch</a> | <a href="#team">Team</a>
+</p>
 
 ---
 
-## ✨ Key Features
+## Quick overview
 
-- **🌍 Visual Place Recognition:** Uses a fine-tuned pipeline (powered by Facebook's DINOv2 and FAISS) to accurately identify specific landmarks from thousands of reference locations under varying conditions.
-- **🔍 Explainable AI (XAI):** Employs state-of-the-art keypoint matching (DISK + LightGlue) to geometrically verify the structural accuracy of the identified landmark, providing visual feature-matching proof to the user.
-- **📜 Automated Storytelling:** Integrates with Google Gemini to dynamically script captivating documentary narratives complete with proper historical pacing, facts, and structure.
-- **🎨 Visual Generation:** Employs SDXL Lightning (8-Step) to rapidly synthesize historically-themed imagery matching the narrative script.
-- **🎬 Automated Video Assembly:** Programmatically pairs synthesized audio and AI-generated images, applying zooming "Ken Burns" effects and transitions to assemble a seamless documentary using FFmpeg.
-- **💻 Modern Full-Stack UI:** A responsive, visually stunning web application built on React/Vite, offering video download, historical archives, and a rich user dashboard.
+> Upload one street-level image.
+> 
+> HistoriClip identifies the landmark, proves geometric authenticity, writes a documentary script, generates stylized historical scenes, and renders a narrated documentary video automatically.
 
----
-
-## 🏗 System Architecture
-
-The project is structured as a distributed microservices platform consisting of three primary operational layers:
-
-1. **Frontend (React + Vite):** The user-facing client providing the interface for photo uploading, video watching, history browsing, and XAI inspection.
-2. **Backend Engine (Node.js + Express):** The RESTful API layer handling user authentication (JWT), database operations (MySQL), file storage, rate limiting, and request routing.
-3. **AI Microservice (Python / Flask):** The heavy-lifting engine executing all GPU-accelerated tasks including the DINOv2 Location Engine, Geometrical matching, LLM integration, Diffusion generation, and Video stitching.
+| Input | Intelligence | Output |
+|---|---|---|
+| Landmark photo | Vision + XAI + LLM + Diffusion + Video synthesis | Historical mini-documentary |
 
 ---
 
-## 🛠 Tech Stack
+## Production Pipeline
 
-### AI & Machine Learning
-*   **Computer Vision:** `PyTorch`, `Transformers` (HuggingFace), `Kornia` (DISK + LightGlue XAI), `OpenCV`
-*   **Vector Search:** `FAISS`
-*   **Image Generation:** `SDXL Lightning` (via `diffusers` / `bitsandbytes`)
-*   **Language Models:** Google Gemini API
-*   **Audio & Video:** `gTTS` (Text-to-Speech), `MoviePy`, `FFmpeg`
+![Production Pipeline](HistoriClip-v2/diagrams/production_pipeline.png)
 
-### Application Layer
-*   **Frontend:** `React 19`, `Vite`, `TailwindCSS`, `Lucide React`
-*   **Backend:** `Node.js`, `Express.js`, `Axios`, `Multer`, `Bcrypt.js`, `Winston`
-*   **Database:** `MySQL`
 
----
+| Stage | Engine |
+|---|---|
+| Detection | DINOv2 + FAISS |
+| Verification | DISK + LightGlue |
+| Script | Google Gemini |
+| Visuals | SDXL Lightning |
+| Rendering | gTTS + FFmpeg + Ken Burns |
 
-## 🚀 Getting Started
+**What makes this special?**
 
-Deploying the whole ecosystem properly requires specific system dependencies (Conda environments, NVIDIA CUDA toolkits, exact Python/Node versions, etc.) to prevent version clashes. 
-
-We have prepared a **bulletproof, comprehensive step-by-step guide** for configuring the project on Windows, Linux, and macOS.
-
-👉 **[Read the Complete Environment Setup Guide here](./HistoriClip-v2/ENVIRONMENT_SETUP.md)** 👈
-
-### Quick Overview of Setup
-1. Verify prerequisites (`Miniconda`, `CUDA 12.1`, `Node 18/20`, `MySQL`, `FFmpeg`).
-2. Configure your API keys (`Gemini`, `Google Vision`, `Mapillary`) in a `.env` file.
-3. Build the AI Conda environment using the exact frozen dependency YAML.
-4. Download the heavy `SDXL Lightning` model weights manually.
-5. Create the database schemas.
-6. Run the platform using the provided `windows_start.bat` or `start.sh` scripts.
+- Structural verification is not a guess; keypoint matching provides visual evidence.
+- Narrative and visuals are generated as one coherent timeline.
+- The final output is not just images; it is a paced, narrated documentary video.
 
 ---
 
-## 🎮 Usage
+## System Blueprint
 
-1. Launch all 3 services using `windows_start.bat` (Windows) or `./start.sh` (Linux/macOS).
-2. Open your browser to `http://localhost:5173`.
-3. Create an account or log in.
-4. Upload an image of a historical landmark.
-5. Wait as the system processes the image, generating the location data, XAI proof, and final video.
-6. View your documentary on the Video Details page or revisit it later from your History dashboard!
+![System Blueprint](HistoriClip-v2/diagrams/system_blueprint.png)
 
----
-
-## 👥 Team
-
-This project was developed collaboratively as a Final Year University Project by:
-
-<!-- Location Engine, AI Microservices & Full Stack Integration -->
-<!-- API Architecture, LLM Workflows & Database Management -->
-<!-- Frontend Systems, Data Processing Pipeline & Architecture Design -->
-
-*   **Onkar Kundaram**
-*   **Vishwas Kude**
-*   **Prajwal Khobragade**
+| Layer | Responsibility | Core Stack |
+|---|---|---|
+| Frontend | Upload, playback, history, XAI view | React 19, Vite, TailwindCSS |
+| Backend | Auth, orchestration, persistence, APIs | Node.js, Express, MySQL |
+| AI Service | Recognition, verification, generation, stitching | Python, Flask, PyTorch |
 
 ---
 
-## 📄 License
+## Quick Launch
 
-This is a personal/academic team project. No external licensing is provided at this time. All rights reserved by the original project authors.
+1. Read setup guide: [`HistoriClip-v2/ENVIRONMENT_SETUP.md`](./HistoriClip-v2/ENVIRONMENT_SETUP.md)
+2. Install prerequisites: `Miniconda`, `CUDA 12.1`, `Node 18/20`, `MySQL`, `FFmpeg`
+3. Add API keys in `.env`: `Gemini`, `Google Vision`, `Mapillary`
+4. Start services:
+	 - Windows: `windows_start.bat`
+	 - Linux/macOS: `./start.sh`
+5. Open `http://localhost:5173`
+
+---
+
+## Team
+
+| Contributor |
+|---|
+| Onkar Kundaram |
+| Vishwas Kude |
+| Prajwal Khobragade |
+
+---
+
+## License
+
+Personal/academic final-year project. All rights reserved by the original authors.
+
+<p align="center">
+	<img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=0:0EA5E9,100:0F172A" alt="Footer" />
+</p>
