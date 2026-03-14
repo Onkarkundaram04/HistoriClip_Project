@@ -38,7 +38,7 @@
 ## Demo
 
 <p align="center">
-  <video src="HistoriClip-v2/diagrams/HistoriClip Project.mp4" width="100%" controls autoplay loop muted></video>
+  <video src="https://github.com/user-attachments/assets/b76506a0-d503-4f85-89a9-f381be5edfba" width="100%" controls autoplay loop muted></video>
 </p>
 
 ---
