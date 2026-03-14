@@ -77,7 +77,7 @@ class DINOv2Config:
 class VisualModuleConfig:
     """SDXL Lightning image generation settings."""
     gemini_api_key: str = ""
-    gemini_model: str = "gemini-2.5-flash-lite"
+    gemini_model: str = "gemini-3.1-flash-lite-preview"
     default_steps: int = 8
     default_guidance: float = 0.0
     resolution_laptop: tuple = (1344, 768)       # 16:9 landscape

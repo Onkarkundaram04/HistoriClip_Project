@@ -6,6 +6,7 @@
 	<a href="./HistoriClip-v2/ENVIRONMENT_SETUP.md"><img src="https://img.shields.io/badge/Setup-Environment%20Guide-0F172A?style=flat-square&logo=readthedocs&logoColor=white" alt="Setup Guide" /></a>
 	<a href="https://github.com/Onkarkundaram04/HistoriClip_Project/commits"><img src="https://img.shields.io/github/last-commit/Onkarkundaram04/HistoriClip_Project?style=flat-square&logo=github&logoColor=white&color=1E293B" alt="Last Commit" /></a>
 	<img src="https://img.shields.io/github/repo-size/Onkarkundaram04/HistoriClip_Project?style=flat-square&logo=github&logoColor=white&color=0369A1&label=size" alt="Repository Size" />
+	<a href="https://www.repostatus.org/#active"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active" /></a>
 </p>
 
 <p align="center">
@@ -17,7 +18,7 @@
 </p>
 
 <p align="center">
-	<a href="#Quick_overview">Quick overview</a> | <a href="#production-pipeline">Production Pipeline</a> | <a href="#system-blueprint">System Blueprint</a> | <a href="#quick-launch">Quick Launch</a> | <a href="#team">Team</a>
+	<a href="#quick-overview">Quick overview</a> | <a href="#production-pipeline">Production Pipeline</a> | <a href="#system-blueprint">System Blueprint</a> | <a href="#quick-launch">Quick Launch</a> | <a href="#team">Team</a>
 </p>
 
 ---
@@ -34,9 +35,19 @@
 
 ---
 
+## Demo
+
+<p align="center">
+  <video src="HistoriClip-v2/diagrams/HistoriClip Project.mp4" width="100%" controls autoplay loop muted></video>
+</p>
+
+---
+
 ## Production Pipeline
 
-![Production Pipeline](HistoriClip-v2/diagrams/production_pipeline.png)
+<p align="center">
+  <img src="HistoriClip-v2/diagrams/production_pipeline.png" alt="Production Pipeline Diagram" width="100%" />
+</p>
 
 
 | Stage | Engine |
@@ -57,7 +68,9 @@
 
 ## System Blueprint
 
-![System Blueprint](HistoriClip-v2/diagrams/system_blueprint.png)
+<p align="center">
+  <img src="HistoriClip-v2/diagrams/system_blueprint.png" alt="System Blueprint Diagram" width="100%" />
+</p>
 
 | Layer | Responsibility | Core Stack |
 |---|---|---|
