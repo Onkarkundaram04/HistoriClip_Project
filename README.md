@@ -96,9 +96,13 @@ We have prepared a **bulletproof, comprehensive step-by-step guide** for configu
 
 This project was developed collaboratively as a Final Year University Project by:
 
-*   **Onkar Kundaram** - Location Engine, AI Microservices & Full Stack Integration
-*   **Vishwas Kude** - API Architecture, LLM Workflows & Database Management
-*   **Prajwal Khobragade** - Frontend Systems, Data Processing Pipeline & Architecture Design
+<!-- Location Engine, AI Microservices & Full Stack Integration -->
+<!-- API Architecture, LLM Workflows & Database Management -->
+<!-- Frontend Systems, Data Processing Pipeline & Architecture Design -->
+
+*   **Onkar Kundaram**
+*   **Vishwas Kude**
+*   **Prajwal Khobragade**
 
 ---
 
