@@ -77,36 +77,7 @@ The project is split into **three independent services** that communicate over H
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-```mermaid
-graph TB
-    subgraph Browser["🌐 Browser (React + Vite :5173)"]
-        A[Home Page] --> B[Dashboard - Upload Form]
-        B --> C[History Page]
-        B --> D[VideoDetail Page]
-    end
-    subgraph Backend["🖥️ Node.js Backend :5000"]
-        E[Express Server]
-        F[JWT Auth Middleware]
-        G[multer Upload]
-        H[MySQL Database]
-        I[analyzeController]
-    end
-    subgraph AI["🤖 Python Flask AI :5001"]
-        J["/generate endpoint"]
-        K[vision.py]
-        L[loc_engine.py]
-        M[information.py]
-        N[visual.py]
-        O[audio.py]
-        P[editor.py]
-    end
-
-    Browser -->|"POST /api/analyze (FormData + JWT)"| Backend
-    Backend -->|"POST /generate (X-AI-Service-Secret)"| AI
-    AI -->|"JSON result"| Backend
-    Backend -->|"GET /api/videos/:id (polling)"| Browser
-    Backend --- H
-```
+![System Architecture Overview](diagrams/01_system_architecture.png)
 
 ---
 
@@ -114,63 +85,7 @@ graph TB
 
 This is the **exact sequence** of events when a user uploads a photo and clicks "Generate":
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant React as React UI (port 5173)
-    participant Node as Node.js Backend (port 5000)
-    participant MySQL as MySQL Database
-    participant Python as Python AI Service (port 5001)
-
-    User->>React: Drags image, clicks Generate
-    React->>Node: POST /api/analyze (multipart/form-data + JWT)
-    activate Node
-    Node->>Node: multer saves image to /uploads/UUID.jpg
-    Node->>MySQL: INSERT videos (status='processing', landmark='Processing...')
-    MySQL-->>Node: videoId = 42
-    Node->>React: 200 OK { id: 42, status: "processing" }
-    deactivate Node
-    Note over Node: Background task starts (non-blocking fire-and-forget)
-
-    activate Node
-    Node->>Python: POST /generate (image + X-AI-Service-Secret + callback_url)
-
-    activate Python
-    Python->>Node: POST /api/analyze/progress {video_id:42, step:"vision"}
-    Node->>MySQL: UPDATE videos SET processing_step='vision'
-    Python->>Python: vision.py — 4-tier landmark detection
-
-    Python->>Node: POST /api/analyze/progress {video_id:42, step:"script"}
-    Python->>Python: information.py — Wikidata UNESCO + Gemini script
-
-    Python->>Node: POST /api/analyze/progress {video_id:42, step:"images"}
-    Python->>Python: visual.py — SDXL Lightning image generation
-
-    Python->>Node: POST /api/analyze/progress {video_id:42, step:"audio"}
-    Python->>Python: audio.py — Edge-TTS narration
-
-    Python->>Node: POST /api/analyze/progress {video_id:42, step:"video"}
-    Python->>Python: editor.py — FFmpeg video assembly
-
-    Python->>Node: POST /api/analyze/progress {video_id:42, step:"xai"}
-    Python->>Python: Copy XAI visuals to /uploads/xai/
-
-    Python-->>Node: 200 JSON { success, landmark, video_path, audio_path, ... }
-    deactivate Python
-
-    Node->>MySQL: UPDATE videos SET status='completed', landmark_name, video_url, ...
-    deactivate Node
-
-    loop React polls every 3 seconds
-        React->>Node: GET /api/videos/42
-        Node->>MySQL: SELECT * FROM videos WHERE id=42
-        MySQL-->>Node: { status: 'completed', video_url: '...', ... }
-        Node-->>React: { status: 'completed', video_url: '...', ... }
-    end
-
-    React->>React: Navigate to /video/42
-    React->>User: Show video player + script + XAI + map
-```
+![Grand Request Lifecycle — Sequence Diagram](diagrams/02_request_lifecycle.png)
 
 ### Critical Architecture Facts
 
@@ -193,19 +108,7 @@ sequenceDiagram
 
 This file is the Flask microservice entry point. It does **not** contain AI logic — it wires together all the AI modules and provides the HTTP API surface.
 
-```mermaid
-flowchart TD
-    BOOT["Python interpreter starts\napp.py"] --> ENV_FIX["os.environ KMP_DUPLICATE_LIB_OK=TRUE\n(Must be before any imports —\nprevents OpenMP crash on Windows)"]
-    ENV_FIX --> ENV["load_dotenv from project root .env"]
-    ENV --> IMPORTS["Import AI modules\n(not yet initialized — just class definitions)"]
-    IMPORTS --> FLASK["app = Flask(__name__)"]
-    FLASK --> CORS_SETUP["CORS: allow only CORS_ORIGINS env var\n(backend port 5000 only)"]
-    CORS_SETUP --> SECRET["AI_SERVICE_SECRET from env\n(shared with Node.js backend)"]
-    SECRET --> GLOBALS["Singleton globals = None\nvision_analyzer / info_generator\nimage_generator / audio_generator / video_editor"]
-    GLOBALS --> ROUTES["Register endpoints:\nGET  /health\nPOST /analyze/vision\nPOST /generate\nPOST /generate/script|images|audio"]
-    ROUTES --> MKDIRS["Create backend/uploads subdirs\n(generated_videos, generated_audio,\n generated_images, xai)"]
-    MKDIRS --> LISTEN["app.run(host='0.0.0.0', port=5001)"]
-```
+![app.py Boot Sequence](diagrams/03_app_boot_sequence.png)
 
 #### Why `KMP_DUPLICATE_LIB_OK = "TRUE"` Must Be Line 17
 
@@ -255,24 +158,7 @@ The decorator:
 
 #### `/generate` — The Full Pipeline Endpoint
 
-```mermaid
-flowchart TD
-    REQ["POST /generate\n(image file, speed, video_id, callback_url)"]
-    REQ --> AUTH["require_service_auth"]
-    AUTH --> CHECK{image in request.files?}
-    CHECK -- No --> E1["400 No image provided"]
-    CHECK -- Yes --> STEP1["report_progress('vision')\nStep 1: analyzer.analyze(image_file)"]
-    STEP1 --> VR{vision_result.success?}
-    VR -- False --> E2["400 No landmark detected\nAll analysis tiers failed"]
-    VR -- identified=False --> E3["400 Location unidentified\nCannot generate factual script"]
-    VR -- True --> LN["Extract landmark_name"]
-    LN --> STEP2["report_progress('script')\nStep 2: info_gen.generate(landmark_name)"]
-    STEP2 --> STEP3["report_progress('images')\nStep 3: img_gen.generate(info_result['prompts'])"]
-    STEP3 --> STEP4["report_progress('audio')\nStep 4: audio_gen.generate(info_result['script'], speed)"]
-    STEP4 --> STEP5["report_progress('video')\nStep 5: editor.create_video(image_paths, audio_path)"]
-    STEP5 --> STEP6["report_progress('xai')\nStep 6: Copy XAI files to backend/uploads/xai/\nBuild reference image URLs"]
-    STEP6 --> DONE["report_progress('complete')\nReturn 200 JSON with all paths + metadata"]
-```
+![/generate Endpoint Pipeline](diagrams/04_generate_endpoint.png)
 
 #### `host_url(path)` — Disk Path to HTTP URL Converter
 
@@ -296,40 +182,7 @@ This module answers: **"Which landmark is in this photo?"**
 
 It tries up to 4 different techniques in order. The moment one succeeds, it returns a standardized result dict. If all fail, it returns `identified=False`. **It never fabricates a name.**
 
-```mermaid
-flowchart TD
-    START["analyze_image(image_path)"]
-
-    START --> T1["TIER 1 — Google Vision API\ndetect_landmark_google(image_path)"]
-    T1 --> T1R{"Landmark returned AND\n_is_meaningful_name(name)?"}
-    T1R -- Yes --> DONE1["✅ TIER 1 HIT\nReturn tier1_landmark\nconfidence = Google's score"]
-    T1R -- "No / API key missing" --> T2
-
-    T2["TIER 2 — EXIF GPS\nextract_gps_from_exif(image_path)"]
-    T2 --> T2R{GPS found in metadata?}
-    T2R -- No GPS --> T3
-    T2R -- Yes --> GEO2["reverse_geocode(lat, lon)\nOpenStreetMap Nominatim"]
-    GEO2 --> T2NR{Meaningful POI name returned?}
-    T2NR -- Yes --> DONE2["✅ TIER 2 HIT\nReturn tier2_gps, confidence=0.7"]
-    T2NR -- "Generic / road name" --> POI2["_find_landmark_in_area([(lat,lon)])\nNominatim keyword search + Overpass API"]
-    POI2 --> T2PR{POI name found?}
-    T2PR -- Yes --> DONE2A["✅ TIER 2 HIT (via POI search)\nReturn tier2_gps with POI name"]
-    T2PR -- No --> DONE2B["⚠️ TIER 2 GPS Only\nReturn tier2_gps, identified=False"]
-
-    T3["TIER 3 — DINOv2 + FAISS\n_get_engine().search(image_path)"]
-    T3 --> T3R{"FAISS match found AND\nsimilarity ≥ min_confidence?"}
-    T3R -- No --> FAIL["✗ All Tiers Failed\nsuccess=False, identified=False"]
-    T3R -- Yes --> GEO3["reverse_geocode(best_match.lat, best_match.lon)"]
-    GEO3 --> T3NR{Meaningful name?}
-    T3NR -- Yes --> DONE3["✅ TIER 3 HIT (geocode)\nReturn tier3_faiss_geocode"]
-    T3NR -- No name --> T35["TIER 3.5 — Gemini VLM\n_identify_landmark_vlm(\n  image_path, lat, lon, city, state)"]
-    T35 --> T35R{Gemini identified it?}
-    T35R -- Yes --> DONE35["✅ TIER 3.5 HIT (VLM)\nReturn tier3_faiss_vlm"]
-    T35R -- No --> AREA["_find_landmark_in_area(\n  consensus GPS points within 500m)"]
-    AREA --> AR{POI found?}
-    AR -- Yes --> DONE3B["✅ TIER 3 HIT (area search)\nReturn tier3 with POI name"]
-    AR -- No --> DONE3C["⚠️ TIER 3 GPS Only\nidentified=False"]
-```
+![4-Tier Vision Pipeline](diagrams/05_4tier_vision_pipeline.png)
 
 After Tier 3 runs (regardless of `identified` outcome), it always:
 - Generates the **LightGlue XAI visualization** (3-panel keypoint match image).
@@ -535,30 +388,7 @@ The bridge:
 
 This is the heaviest AI module. The `LocationEngine` class provides **visual place recognition** — it identifies locations by mathematically comparing a query photo against a database of thousands of geotagged reference images.
 
-```mermaid
-flowchart LR
-    subgraph OFFLINE["🔨 OFFLINE (One-Time Build Phase)"]
-        direction TB
-        CSV["locations.csv\n(filename, lat, lon, name)"]
-        CSV --> LOAD["Load each image from disk"]
-        LOAD --> DINO["DINOv2 forward pass\n(HuggingFace AutoModel)"]
-        DINO --> GEM["gem_pool() — GeM Pooling\n768-dim patch tokens → 768-dim vector"]
-        GEM --> L2["L2 normalize\n(unit vector for cosine similarity)"]
-        L2 --> ADD["FAISS IndexFlatIP.add()\n(store in C++ index)"]
-        ADD --> SAVE["faiss.write_index() + json metadata"]
-    end
-
-    subgraph ONLINE["⚡ ONLINE (Per Query Request)"]
-        direction TB
-        QIMG["Query Image"]
-        QIMG --> QDINO["DINOv2 + gem_pool\n→ 768-dim query vector"]
-        QDINO --> SEARCH["faiss.search(query_vec, k=5)\nTop-5 cosine similarity matches"]
-        SEARCH --> CONSENSUS["_compute_gps_consensus()\nMedian GPS of matches within 500m"]
-        CONSENSUS --> LG_LOOP["LightGlue Loop over top-5:\nDISK keypoints + LightGlue match\nCount inliers per reference image"]
-        LG_LOOP --> PROMOTE["Promote match with most inliers\n(geometry overrides visual similarity)"]
-        PROMOTE --> RETURN["Return: best_match, matches, gps_consensus"]
-    end
-```
+![DINOv2 + FAISS + LightGlue — Offline Build & Online Search](diagrams/06_dinov2_faiss_lightglue.png)
 
 #### The Core Algorithm: Why DINOv2?
 
@@ -758,22 +588,7 @@ The hottest (brightest) regions are the pixels DINOv2 weighted most heavily when
 
 Three classes work in sequence:
 
-```mermaid
-graph LR
-    APP["app.py calls\nInformationGenerator.generate(landmark_name)"] --> IG
-    
-    subgraph IG["InformationGenerator (public API)"]
-        direction TB
-        V["1. Validate name\n(reject garbage/unidentified)"]
-        W["2. WikidataClient.query_unesco_status()"]
-        S["3. ScriptGenerator.generate_script()"]
-        SC["4. ScriptGenerator.generate_scenes()"]
-        R["5. Return complete package"]
-        V --> W --> S --> SC --> R
-    end
-    
-    IG --> RESULT["{ script, prompts, is_unesco,\n  unesco_year, wikidata_info }"]
-```
+![information.py Class Flow](diagrams/07_information_classes.png)
 
 ---
 
@@ -781,32 +596,7 @@ graph LR
 
 **4-Strategy Cascade:**
 
-```mermaid
-flowchart TD
-    START["query_unesco_status(landmark_name)"]
-
-    START --> S1["Strategy 1: SPARQL Exact Label\n_sparql_unesco_query(landmark_name)\nQuery: rdfs:label = 'landmark_name'@en"]
-    S1 --> S1R{Found AND UNESCO verified?}
-    S1R -- "UNESCO ✅" --> RETURN["Return UNESCO result"]
-    S1R -- "Found, not UNESCO" --> FALLBACK_SAVE["Save as non_unesco_fallback"]
-    S1R -- "Not found" --> S2
-    FALLBACK_SAVE --> S2
-
-    S2["Strategy 2: Fuzzy Autocomplete\n_fuzzy_search_unesco(landmark_name)\nwbsearchentities API → candidate QIDs\n_check_entity_unesco_rest(qid) for each"]
-    S2 --> S2R{Found AND UNESCO?}
-    S2R -- "UNESCO ✅" --> RETURN
-    S2R -- No --> S3
-
-    S3["Strategy 3: Enhanced fuzzy\nfor suffix in 'World Heritage Site', 'UNESCO':\n  _fuzzy_search_unesco('landmark + suffix')"]
-    S3 --> S3R{UNESCO via enhanced name?}
-    S3R -- "UNESCO ✅" --> RETURN
-    S3R -- No --> S4
-
-    S4["Strategy 4: Geographic SPARQL\n_search_nearby_unesco(coords.lat, coords.lon)\nWikibase around: radius=5km\n(if non_unesco_fallback has coordinates)"]
-    S4 --> S4R{UNESCO site within 5km?}
-    S4R -- "UNESCO ✅" --> RETURN
-    S4R -- No --> FALLBACK_RETURN["Return non_unesco_fallback\nor empty result (not UNESCO)"]
-```
+![WikidataClient 4-Strategy UNESCO Cascade](diagrams/08_wikidata_cascade.png)
 
 ---
 
@@ -969,30 +759,7 @@ The `fallback` list (returned on JSON parse failure) is `N` copies of `"Cinemati
 
 **File:** `python-ai-service/modules/visual.py`
 
-```mermaid
-flowchart TD
-    GEN["ImageGenerator.generate(prompts, input_image=None)"]
-    GEN --> CHK{Pipeline\nloaded?}
-    CHK -- No --> LP["_load_pipeline()"]
-    CHK -- Yes --> LOOP
-
-    LP --> VAE["AutoencoderTiny.from_pretrained\n'madebyollin/taesdxl'\n(10MB, replaces 2GB standard VAE)"]
-    VAE --> PIPE["StableDiffusionXLPipeline.from_single_file\n'sdxlLightning_8Steps.safetensors'\nfloat16, shares TinyVAE"]
-    PIPE --> I2I["StableDiffusionXLImg2ImgPipeline(**pipe.components)\n(zero extra VRAM — shares all weights)"]
-    I2I --> OFFLOAD["pipe.enable_model_cpu_offload()\n(active layer in VRAM, rest in RAM)"]
-    OFFLOAD --> SCHED["EulerDiscreteScheduler\ntimestep_spacing='trailing'\n(REQUIRED for Lightning 8-step)"]
-    SCHED --> XFORM["pipe.enable_xformers_memory_efficient_attention()\n(if xformers installed)"]
-    XFORM --> LOOP
-
-    LOOP["Loop i over each prompt"]
-    LOOP --> INF["torch.inference_mode()\n(no gradient tracking — 30% faster, less VRAM)"]
-    INF --> WHICH{input_image\nprovided?}
-    WHICH -- No --> T2I["pipe(prompt=prompt,\n  num_inference_steps=8,\n  guidance_scale=config,\n  width=1024, height=576)"]
-    WHICH -- Yes --> I2I_CALL["img2img_pipe(prompt=prompt,\n  image=resized_input,\n  strength=0.75)"]
-    T2I --> SAVE["image.save(backend/uploads/generated_images/gen_ts_i.png)"]
-    I2I_CALL --> SAVE
-    SAVE --> LOOP
-```
+![SDXL Lightning Image Generation Pipeline](diagrams/09_sdxl_pipeline.png)
 
 #### Why SDXL Lightning (8 Steps)?
 
@@ -1039,46 +806,7 @@ xformers' Memory-Efficient Attention (based on FlashAttention):
 
 **File:** `python-ai-service/modules/audio.py`
 
-```mermaid
-flowchart TD
-    GEN["AudioGenerator.generate(script, speed='normal')"]
-    GEN --> PRE["_preprocess_script(script)"]
-    
-    subgraph PREPROC["Script Preprocessing"]
-        direction LR
-        P1["Strip markdown:\n## headings / **bold** / `code` / - lists"] --> P2["Smart quotes → straight\n" → \" / ' → '"]
-        P2 --> P3["Expand abbreviations:\nB.C. → B C\ne.g. → for example\netc. → etcetera\nvs. → versus"]
-        P3 --> P4["Paragraph breaks → '. '\n(creates TTS pause)\nSingle newlines → ' '"]
-        P4 --> P5["Normalize punctuation:\n— → ,  | ... → .  | , , → ,\nfix spacing around . ! ? ,"]
-        P5 --> P6["Ensure trailing period"]
-    end
-    
-    PRE --> PREPROC
-    PREPROC --> RATE["Determine speech rate:\nnormal → config.audio.rate (e.g., '+0%')\nfast → '+50%'"]
-    RATE --> TTS["_run_tts(clean_text, output_path, rate, srt_path)"]
-    
-    subgraph BRIDGE["Async-to-Sync Bridge"]
-        direction TB
-        B1["try get_running_loop()"]
-        B1 --> B2{Loop\nrunning?}
-        B2 -- Yes --> B3["try nest_asyncio.apply()\nloop.run_until_complete(_synth())"]
-        B2 -- No --> B4["asyncio.run(_synth())"]
-        B2 -- "Yes, no nest_asyncio" --> B5["ThreadPoolExecutor\npool.submit(asyncio.run, _synth()).result()"]
-    end
-    
-    TTS --> BRIDGE
-    
-    subgraph EDGE["edge_tts._synth()"]
-        direction TB
-        E1["edge_tts.Communicate(\n  voice, rate, volume, pitch).stream()"]
-        E1 --> E2["async for chunk in stream():\n  if 'audio' → write to .mp3\n  if 'WordBoundary' → SubMaker.feed(chunk)"]
-        E2 --> E3["SubMaker.get_srt()\nWrite to .srt subtitle file"]
-    end
-    
-    BRIDGE --> EDGE
-    EDGE --> VERIFY["Check file exists AND size > 0"]
-    VERIFY --> RETURN["Return absolute path to .mp3"]
-```
+![Edge-TTS Audio Generation Pipeline](diagrams/10_audio_tts_pipeline.png)
 
 #### Why Script Preprocessing Is Essential
 
@@ -1141,29 +869,7 @@ These `.srt` files are stored alongside the `.mp3` in `backend/uploads/generated
 
 **File:** `python-ai-service/modules/editor.py`
 
-```mermaid
-flowchart TD
-    CREATE["VideoEditor.create_video(image_paths, audio_path, output_filename=None)"]
-
-    CREATE --> DUR["_get_audio_duration(audio_path)\nffmpeg -i audio.mp3\nParse stderr: Duration: HH:MM:SS.ms\nReturn float seconds"]
-    DUR --> TIMING["Timing math:\nn = len(image_paths)\ntr_dur = config.transition_duration (e.g. 1.0s)\nslide_dur = max((audio_dur + (n-1)*tr_dur) / n, tr_dur+0.1)"]
-    TIMING --> CMD_INPUTS["Build FFmpeg input args:\nfor each img: -loop 1 -t slide_dur -i img.png\n-i audio.mp3"]
-    CMD_INPUTS --> FILTERS["Build -filter_complex string"]
-
-    subgraph FILTER_BUILD["Filter Complex Building"]
-        direction TB
-        F1["Per-image filter:\n[i:v] scale=WxH:force_original_aspect_ratio=decrease,\npad=WxH:(ow-iw)/2:(oh-ih)/2,\nsetsar=1, format=yuv420p,\nzoompan=z='min(zoom+0.0015,1.5)':d=FRAMES:s=WxH\n→ [vi]"]
-        F1 --> F2["Daisy-chain xfade:\n[v0][v1] xfade=transition=fade:duration=1.0:offset=O1 [f1]\n[f1][v2] xfade=transition=fade:duration=1.0:offset=O2 [f2]\n...where Oi = i*(slide_dur - tr_dur)"]
-    end
-
-    FILTERS --> FILTER_BUILD
-    FILTER_BUILD --> ENCODE{"NVENC\navailable?"}
-    ENCODE -- Yes --> NVENC_CMD["-c:v h264_nvenc -preset p1 -cq 20\n(GPU encode, 2-3s for 30s video)"]
-    ENCODE -- No --> X264_CMD["-c:v libx264 -preset ultrafast -crf 23\n(CPU encode, 30-120s for 30s video)"]
-    NVENC_CMD --> RUN
-    X264_CMD --> RUN
-    RUN["subprocess.run(cmd, check=True)\nRaise RuntimeError on FFmpeg failure"] --> OUT["video_{UUID}.mp4\nSaved to backend/uploads/generated_videos/"]
-```
+![FFmpeg Video Assembly Pipeline](diagrams/11_ffmpeg_editor.png)
 
 #### Duration Mathematics
 
@@ -1242,27 +948,7 @@ $$\text{duration} = H \times 3600 + M \times 60 + S = 0 \times 3600 + 0 \times 6
 
 **File:** `backend/src/server.js`
 
-```mermaid
-flowchart TD
-    START["node backend/src/server.js"]
-    START --> DOTENV["require('dotenv').config\nLoad from ../../.env (project root)"]
-    DOTENV --> EXPRESS["const app = express()"]
-    EXPRESS --> HELMET["app.use(helmet({ ... }))\ncrossOriginResourcePolicy: 'cross-origin'\ncontentSecurityPolicy: false"]
-    HELMET --> CORS["app.use(cors({ origin: function(origin, cb) {\n  Allow if: configured list / localhost:* / 192.168.x.x\n  Otherwise: reject CORS\n}, credentials: true }))"]
-    CORS --> MORGAN["app.use(morgan('dev'))"]
-    MORGAN --> BODY["app.use(express.json(limit: 10mb))\napp.use(express.urlencoded(limit: 10mb))"]
-    BODY --> DOWNLOAD["GET /download?url=...\n(forces browser Save-As dialog via res.download())"]
-    DOWNLOAD --> STATIC["app.use('/uploads', express.static(../uploads))\n(inline video/audio playback)"]
-    STATIC --> HEALTH["GET /api/health → 200 OK JSON"]
-    HEALTH --> ROUTES["app.use('/api', routes)\n(all auth, video, analyze, user routes)"]
-    ROUTES --> REACT{frontend-react/dist\nexists?}
-    REACT -- Yes --> SPA["Serve React SPA\napp.get('*') → index.html\n(for client-side routing)"]
-    REACT -- No --> ERR404
-    SPA --> ERR404["404 handler for unknown routes"]
-    ERR404 --> ERRGLOBAL["Global errorHandler middleware\n(logs + returns JSON error)"]
-    ERRGLOBAL --> DB["await connectDatabase()\nMySQL connection pool"]
-    DB --> LISTEN["app.listen(PORT, ...)\nPrint startup banner"]
-```
+![server.js Express Bootstrap](diagrams/12_server_bootstrap.png)
 
 #### Key Security Decisions
 
@@ -1279,41 +965,7 @@ flowchart TD
 
 ### 5.2 Authentication Flow
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant React
-    participant Backend
-    participant MySQL
-
-    Note over User,MySQL: Registration
-    User->>React: Enter username, email, password
-    React->>Backend: POST /api/auth/signup
-    Backend->>Backend: bcryptjs.hash(password, saltRounds=10)
-    Note right of Backend: 2^10 = 1024 hash iterations
-    Backend->>MySQL: INSERT users (username, email, password_hash)
-    MySQL-->>Backend: insertId = 5
-    Backend->>Backend: jwt.sign({userId:5, email}, JWT_SECRET, {expiresIn:'7d'})
-    Backend-->>React: 201 { token: "eyJ...", user: {id, username, email} }
-    React->>React: localStorage.setItem('token', token)
-
-    Note over User,MySQL: Login
-    User->>React: Enter email, password
-    React->>Backend: POST /api/auth/login
-    Backend->>MySQL: SELECT * FROM users WHERE email=?
-    MySQL-->>Backend: { id:5, email, password_hash }
-    Backend->>Backend: bcryptjs.compare(password, stored_hash)
-    Note right of Backend: Returns true/false (timing-safe)
-    Backend-->>React: 200 { token: "eyJ...", user: {...} }
-
-    Note over User,MySQL: Protected Request
-    React->>Backend: GET /api/videos + "Authorization: Bearer eyJ..."
-    Backend->>Backend: auth.middleware.js:\njwt.verify(token, JWT_SECRET)
-    Note right of Backend: Throws if expired or tampered
-    Backend->>Backend: req.user = { userId:5, email }
-    Backend->>MySQL: SELECT * FROM videos WHERE user_id = 5
-    Backend-->>React: 200 { videos: [...] }
-```
+![Authentication Flow — Sequence Diagram](diagrams/13_auth_flow.png)
 
 **bcrypt (10 rounds):** `bcrypt.hash("password", 10)` applies 10 rounds of the Blowfish-based one-way hash. The salt is embedded in the resulting hash string (e.g., `$2b$10$...`). Even with the database leaked, cracking a single bcrypt-10 hash takes hundreds of years on consumer hardware.
 
@@ -1352,27 +1004,7 @@ The `processVideoGenerationBackground` promise runs in the Node.js event loop co
 
 #### `processVideoGenerationBackground(videoId, imagePath, duration)` — Detailed Walkthrough
 
-```mermaid
-flowchart TD
-    BG["processVideoGenerationBackground(videoId, imagePath, duration)"]
-    BG --> HEALTH_CHECK["GET http://localhost:5001/health\ntimeout: 5000ms\nVerify Python AI service is running"]
-    HEALTH_CHECK --> FD["Build FormData:\n  image → fs.createReadStream(imagePath)\n  speed → duration ('normal' or 'fast')\n  video_id → String(videoId)\n  callback_url → 'http://localhost:5000/api/analyze/progress'"]
-    FD --> POST["axios.post(\n  'http://localhost:5001/generate',\n  formData,\n  {\n    headers: { 'X-AI-Service-Secret': secret, ...formData.getHeaders() },\n    timeout: 2_400_000  // 40 minutes\n  }\n)"]
-    POST --> RESP{HTTP 200 received\nfrom Python?}
-    RESP -- Error --> FALLBACK{Error type?}
-    FALLBACK -- "ECONNREFUSED" --> MSG_CONN["'Connection lost. Check Python AI service.'"]
-    FALLBACK -- "response.data.error" --> MSG_AI["Python's error message"]
-    FALLBACK -- Other --> MSG_GEN["error.message"]
-    MSG_CONN --> FAIL["Video.updateStatus(videoId, 'failed', errorMessage)"]
-    MSG_AI --> FAIL
-    MSG_GEN --> FAIL
-
-    RESP -- 200 OK --> PARSE["Parse result JSON:\n  landmark_name, script, video_path, audio_path,\n  is_unesco, gps.lat, gps.lon,\n  xai_matches_url, xai_attention_url,\n  xai_top_matches (stringify for DB),\n  xai_tier_used"]
-    PARSE --> LOC_STR["Convert result.location object to string:\n  location.name OR location.display_name\n  OR 'city, country'"]
-    LOC_STR --> UPDATE["Video.update(videoId, { all fields, status: 'completed' })"]
-    UPDATE --> IMGS["Image.createMany(videoId,\n  result.image_paths.map((url, i) =>\n    ({ url, prompt: result.prompts[i] })))"]
-    IMGS --> DONE["Generation complete ✅"]
-```
+![analyzeController Background Process](diagrams/14_analyze_controller.png)
 
 #### `updateProgress(req, res)` — Internal Callback Handler
 
@@ -1402,53 +1034,7 @@ The React polling will pick up the new `processing_step` value and update the pr
 
 ### 5.4 Database Models & Schema
 
-```mermaid
-erDiagram
-    USERS {
-        int id PK "AUTO_INCREMENT"
-        varchar255 username "NOT NULL"
-        varchar255 email "UNIQUE NOT NULL"
-        varchar255 password_hash "NOT NULL (bcrypt)"
-        datetime created_at "DEFAULT NOW()"
-        datetime updated_at "ON UPDATE NOW()"
-    }
-
-    VIDEOS {
-        int id PK "AUTO_INCREMENT"
-        int user_id FK "→ users.id"
-        varchar255 landmark_name "Detected name"
-        text script "Gemini narration"
-        varchar500 video_url "http://localhost:5000/uploads/..."
-        varchar500 audio_url "http://localhost:5000/uploads/..."
-        varchar500 thumbnail_url "Placeholder for future"
-        varchar500 original_image_url "User's uploaded photo"
-        tinyint is_unesco "0 or 1"
-        varchar10 unesco_year "e.g. '1983'"
-        varchar255 unesco_category "cultural/natural/mixed"
-        varchar255 location "City, Country string"
-        decimal10-8 latitude "GPS decimal"
-        decimal11-8 longitude "GPS decimal"
-        varchar50 status "processing/completed/failed"
-        varchar100 processing_step "vision/script/images/audio/video/xai/complete"
-        text xai_matches_url "URL to LightGlue visualization"
-        text xai_attention_url "URL to DINOv2 attention heatmap"
-        json xai_top_matches "Array of top-5 FAISS matches"
-        varchar50 xai_tier_used "tier1/tier2/tier3_faiss_vlm/etc."
-        int duration "null (future feature)"
-        datetime created_at "DEFAULT NOW()"
-    }
-
-    IMAGES {
-        int id PK "AUTO_INCREMENT"
-        int video_id FK "→ videos.id"
-        text url "http://localhost:5000/uploads/generated_images/..."
-        text prompt "SDXL prompt used for this image"
-        datetime created_at "DEFAULT NOW()"
-    }
-
-    USERS ||--o{ VIDEOS : "1 user generates N videos"
-    VIDEOS ||--o{ IMAGES : "1 video has N AI images"
-```
+![Database Entity-Relationship Diagram](diagrams/15_database_schema.png)
 
 **`Video` Model Key Methods:**
 
@@ -1476,21 +1062,7 @@ erDiagram
 **Location:** `frontend-react/src/`
 **Build Tool:** Vite 5 | **Framework:** React 19 | **Router:** React Router DOM
 
-```mermaid
-graph TB
-    MAIN["main.jsx\nReactDOM.createRoot('#root').render()"] --> BRP["BrowserRouter"]
-    BRP --> APP["App.jsx\nAuthContext.Provider + Route definitions"]
-    APP --> PUB["Public Routes"]
-    APP --> PROT["Protected Routes (require token)"]
-    PUB --> HOME["/  → Home.jsx\nLanding page, Get Started CTA"]
-    PUB --> LOGIN["/login → Login.jsx\nEmail + password form\nStores token in localStorage"]
-    PUB --> SIGNUP["/signup → Signup.jsx\nUsername + email + password"]
-    PROT --> DASH["/dashboard → Dashboard.jsx\nImage upload + progress polling + latest video"]
-    PROT --> HIST["/history → History.jsx\nAll videos, search, filter, delete"]
-    PROT --> VD["/video/:id → VideoDetail.jsx\nVideo player + script + XAI panels + map"]
-    APP --> NAV["Navbar.jsx\nRendered on every page\nShows auth state (login vs logout)"]
-    APP --> FOOT["Footer.jsx\nRendered on every page"]
-```
+![React Frontend Route Structure](diagrams/16_react_routing.png)
 
 #### Page-by-Page Breakdown
 
@@ -1518,29 +1090,7 @@ Standard controlled forms using React state. On submit:
 
 **`Dashboard.jsx`** — The Core Action Page
 
-```mermaid
-flowchart TD
-    DASH["Dashboard mounts\nfetch GET /api/videos?limit=1 (latest video)"]
-    DASH --> UPLOAD_UI["Render: drag-and-drop image zone\n+ Generate button"]
-    UPLOAD_UI --> SELECT["User selects image file"]
-    SELECT --> PREVIEW["Show image preview in UI"]
-    PREVIEW --> SUBMIT["User clicks Generate"]
-    SUBMIT --> POST["POST /api/analyze\nFormData: { image: File, duration: 'normal' }"]
-    POST --> RESP["Receive { id: 42, status: 'processing' }"]
-    RESP --> POLL_START["Start polling interval (every 3s):\nGET /api/videos/42"]
-    
-    subgraph POLL["Polling Loop"]
-        direction TB
-        P1["GET /api/videos/42"]
-        P1 --> P2{status?}
-        P2 -- processing --> P3["Update progress bar text\n(show processing_step value)"]
-        P3 --> WAIT["Wait 3 seconds"] --> P1
-        P2 -- completed --> P4["Clear interval\nNavigate to /video/42"]
-        P2 -- failed --> P5["Clear interval\nShow error message"]
-    end
-    
-    POLL_START --> POLL
-```
+![Dashboard Upload & Polling Flow](diagrams/17_dashboard_polling.png)
 
 ---
 
@@ -1709,31 +1259,7 @@ POST http://localhost:5000/api/analyze/progress
 
 HistoriClip's key differentiator: it **shows its work**. Every landmark identification includes visual proof of the AI reasoning process.
 
-```mermaid
-flowchart TD
-    UPLOAD["User uploads photo"]
-    UPLOAD --> DETECT["Vision pipeline runs (vision.py)"]
-    DETECT --> TIER{Which tier\nsuccessfully identified?}
-
-    TIER --"Tier 1 Google Vision"--> T1_XAI["XAI: Google's confidence score (0.0-1.0)\nDisplayed in VideoDetail as 'Identified by Google Vision API'"]
-
-    TIER --"Tier 2 EXIF GPS"--> T2_XAI["XAI: GPS coordinates on map\nNominatim address as verification\n'Identified from photo GPS metadata'"]
-
-    TIER --"Tier 3 DINOv2+FAISS\n(regardless of sub-method used)"--> T3_XAI
-
-    subgraph T3_XAI["Tier 3 XAI Artifacts (always generated)"]
-        direction TB
-        LG["LightGlue 3-panel visualization\n(primary XAI)\nSaved: query_matches.jpg\nUploaded to: /uploads/xai/matches_UID.jpg"]
-        ATT["DINOv2 Attention Heatmap\n(secondary XAI)\nSaved: query_attention.jpg\nUploaded to: /uploads/xai/attention_UID.jpg"]
-        TOP5["Top-5 FAISS match data\n{ rank, similarity, lat, lon, filename, inliers, verified }\nStored in videos.xai_top_matches (JSON)"]
-    end
-
-    T3_XAI --> FE["React VideoDetail renders:"]
-    FE --> FE1["LightGlue image (src=xai_matches_url)"]
-    FE --> FE2["Attention heatmap (src=xai_attention_url)"]
-    FE --> FE3["Top-5 match table\nwith similarity scores + GPS + inlier counts"]
-    FE --> FE4["Tier badge: 'Gemini VLM + DINOv2/FAISS'\nor 'Direct Geocode + FAISS' etc."]
-```
+![XAI System — Explainable AI Artifacts](diagrams/18_xai_system.png)
 
 #### Understanding the LightGlue Visualization
 

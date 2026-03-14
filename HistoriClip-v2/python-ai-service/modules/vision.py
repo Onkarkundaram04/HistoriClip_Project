@@ -657,12 +657,19 @@ def analyze_image(image_path: str) -> dict:
 
                 # Derive name from reverse geocoding, NOT from FAISS metadata
                 loc = reverse_geocode(best['lat'], best['lon']) if best.get('lat') else None
+                if loc:
+                    print(f"[Vision] Tier 3: Raw Geocode Display Name → {loc.get('display_name', 'None')}")
+                    print(f"[Vision] Tier 3: Raw Geocode Name Field → {loc.get('name', 'None')}")
+                    print(f"[Vision] Tier 3: Geocode City/Suburb → {loc.get('city', 'None')}")
+                
                 name = _resolve_landmark_name(loc)
                 identified = _is_meaningful_name(name) and name != UNIDENTIFIED
+                print(f"[Vision] Tier 3: Resolved Name (after filtering) → {name}")
 
                 # ── TIER 3.5: Gemini VLM with geographic context ──
                 # DINOv2 gave us the neighborhood. Now ask Gemini to identify
                 # the exact landmark using the image + GPS context.
+                vlm_name = None  # Initialize before conditional assignment
                 if not identified:
                     city_name = loc.get('city', '') if loc else ''
                     state_name = loc.get('state', '') if loc else ''

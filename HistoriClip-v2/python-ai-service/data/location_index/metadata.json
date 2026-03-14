@@ -7845,5 +7845,40 @@
     "lon": 73.85313,
     "name": "Sancheti Hospital",
     "source": "mapillary_manual"
+  },
+  {
+    "filename": "mjpm_1.jpg",
+    "lat": 18.513426,
+    "lon": 73.855882,
+    "name": "\"Mahatma Jotiba Phule Mandai\"",
+    "source": "mapillary_manual"
+  },
+  {
+    "filename": "mjpm_2.jpg",
+    "lat": 18.513426,
+    "lon": 73.855882,
+    "name": "\"Mahatma Jotiba Phule Mandai\"",
+    "source": "mapillary_manual"
+  },
+  {
+    "filename": "mjpm_3.jpg",
+    "lat": 18.513426,
+    "lon": 73.855882,
+    "name": "\"Mahatma Jotiba Phule Mandai\"",
+    "source": "mapillary_manual"
+  },
+  {
+    "filename": "mjpm_4.jpg",
+    "lat": 18.513426,
+    "lon": 73.855882,
+    "name": "\"Mahatma Jotiba Phule Mandai\"",
+    "source": "mapillary_manual"
+  },
+  {
+    "filename": "mjpm_1-EDIT.jpg",
+    "lat": 18.513426,
+    "lon": 73.855882,
+    "name": "Mahatma Jotiba Phule Mandai Pune",
+    "source": "mapillary_manual"
   }
 ]
