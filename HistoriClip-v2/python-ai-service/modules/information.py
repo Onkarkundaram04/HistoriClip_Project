@@ -903,6 +903,7 @@ class InformationGenerator:
             'is_unesco': unesco_verified,
             'unesco_year': wikidata_info.get('inscription_year') if wikidata_info else None,
             'error': message, 'unidentified': unidentified,
+            'scenes': [], 'prompts': []
         }
 
 

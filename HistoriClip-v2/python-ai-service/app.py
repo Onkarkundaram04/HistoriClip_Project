@@ -223,6 +223,12 @@ def generate_video():
         info_gen = get_info_generator()
         info_result = info_gen.generate(landmark_name)
         
+        if info_result.get('error') or not info_result.get('script'):
+            return jsonify({
+                'error': 'Script Generation Failed',
+                'message': info_result.get('error', 'Failed to generate factual script.')
+            }), 500
+        
         # Step 3: Image Generation
         report_progress('images')
         print("🖼️ Step 3: Generating images...")

@@ -15,7 +15,7 @@ start "HistoriClip-Backend" cmd /c "title HistoriClip-Backend && cd /d "%ROOT%ba
 
 :: ── 2. Python AI Service (conda) ────────────────────────
 echo  [2/3] Starting AI Service (Python)...
-start "HistoriClip-AI" cmd /c "title HistoriClip-AI && cd /d "%ROOT%python-ai-service" && call conda activate historiclip && python app.py"
+start "HistoriClip-AI" cmd /c "title HistoriClip-AI && cd /d "%ROOT%python-ai-service" && call conda activate historiclip >nul 2>&1 && python app.py"
 
 :: ── 3. Frontend React (Vite) ────────────────────────────
 echo  [3/3] Starting Frontend (React + Vite)...

@@ -16,6 +16,7 @@ import re
 import subprocess
 import logging
 import uuid
+import shutil
 from pathlib import Path
 from typing import List
 
@@ -36,8 +37,27 @@ class VideoEditor:
         self._cfg = self._config.editor
         self._cfg.output_dir.mkdir(parents=True, exist_ok=True)
 
-        self._ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
+        self._ffmpeg = self._resolve_ffmpeg_path()
+        logger.info(f"[Editor] Using FFmpeg: {self._ffmpeg}")
         self._has_nvenc = self._detect_nvenc()
+
+    def _resolve_ffmpeg_path(self) -> str:
+        """Prefer bundled or explicitly configured FFmpeg, fall back to imageio-ffmpeg."""
+        env_path = os.getenv("HISTORICLIP_FFMPEG") or os.getenv("IMAGEIO_FFMPEG_EXE")
+        if env_path and os.path.exists(env_path):
+            return env_path
+
+        base_dir = Path(__file__).resolve().parent.parent
+        exe_name = "ffmpeg.exe" if os.name == "nt" else "ffmpeg"
+        bundled = base_dir.parent / "runtime" / "ffmpeg" / "bin" / exe_name
+        if bundled.exists():
+            return str(bundled)
+
+        from_path = shutil.which("ffmpeg")
+        if from_path:
+            return from_path
+
+        return imageio_ffmpeg.get_ffmpeg_exe()
 
     # ─────────────────────────────────────────────────────────
     # FFmpeg Capability Detection

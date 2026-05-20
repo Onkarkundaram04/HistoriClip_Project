@@ -57,16 +57,30 @@ class ImageGenerator:
         logger.info("[Visual] Loading SDXL Lightning pipeline...")
         load_start = time.time()
 
+        # ── Device Detection ──────────────────────────────────
+        self._use_gpu = torch.cuda.is_available()
+        if self._use_gpu:
+            gpu_name = torch.cuda.get_device_name(0)
+            gpu_mem = torch.cuda.get_device_properties(0).total_memory / (1024**3)
+            logger.info(f"[Visual] 🎮 GPU detected: {gpu_name} ({gpu_mem:.1f} GB VRAM)")
+            dtype = torch.float16
+        else:
+            logger.warning("[Visual] ⚠️  No NVIDIA GPU detected — running in CPU mode")
+            logger.warning("[Visual] ⚠️  Image generation will be SIGNIFICANTLY slower (5-15 min per image)")
+            dtype = torch.float32  # float16 is not reliably supported on CPU
+
         # TinyVAE (10MB, critical speedup for 6GB VRAM)
         try:
-            self._vae = AutoencoderTiny.from_pretrained(_TINY_VAE_ID, torch_dtype=torch.float16)
+            self._vae = AutoencoderTiny.from_pretrained(_TINY_VAE_ID, torch_dtype=dtype)
             logger.info("[Visual] ✅ TinyVAE loaded")
         except Exception as e:
             logger.warning(f"[Visual] TinyVAE failed ({e}), falling back to standard VAE")
             self._vae = None
 
         # SDXL Lightning txt2img
-        load_args = dict(torch_dtype=torch.float16, variant="fp16")
+        load_args = dict(torch_dtype=dtype)
+        if self._use_gpu:
+            load_args['variant'] = 'fp16'
         if self._vae:
             load_args['vae'] = self._vae
         self._pipe = StableDiffusionXLPipeline.from_single_file(_MODEL_PATH, **load_args)
@@ -74,27 +88,37 @@ class ImageGenerator:
         # Img2img shares same components (zero extra memory)
         self._img2img_pipe = StableDiffusionXLImg2ImgPipeline(**self._pipe.components)
 
-        # CPU offload (critical for 6GB VRAM)
-        self._pipe.enable_model_cpu_offload()
+        if self._use_gpu:
+            import torch
+            torch.backends.cudnn.benchmark = True
+            
+            # Optimize memory format (critical for RTX cards, ~20% speedup)
+            self._pipe.unet.to(memory_format=torch.channels_last)
+            if self._vae:
+                self._vae.to(memory_format=torch.channels_last)
+            
+            # CPU offload (moves only necessary parts to 6GB VRAM)
+            self._pipe.enable_model_cpu_offload()
+
+            # Explicitly force PyTorch 2.0 SDPA (faster than xformers in many cases)
+            self._pipe.unet.set_default_attn_processor()
+            logger.info("[Visual] ✅ PyTorch SDPA & Channels-Last enabled")
+        else:
+            # CPU path: move entire pipeline to CPU explicitly
+            self._pipe = self._pipe.to("cpu")
 
         # Scheduler: EulerDiscrete + trailing spacing (required for Lightning)
         self._pipe.scheduler = EulerDiscreteScheduler.from_config(
             self._pipe.scheduler.config, timestep_spacing="trailing"
         )
 
-        # Memory optimizations
-        try:
-            self._pipe.enable_xformers_memory_efficient_attention()
-            logger.info("[Visual] ✅ xformers enabled")
-        except Exception:
-            logger.info("[Visual] xformers not available")
-
         if not self._vae:
             self._pipe.enable_vae_slicing()
             self._pipe.enable_vae_tiling()
 
         self._loaded = True
-        logger.info(f"[Visual] ✅ Pipeline ready ({time.time() - load_start:.1f}s)")
+        mode_str = "GPU" if self._use_gpu else "CPU"
+        logger.info(f"[Visual] ✅ Pipeline ready — {mode_str} mode ({time.time() - load_start:.1f}s)")
 
     # ─────────────────────────────────────────────────────────
     # Image Generation

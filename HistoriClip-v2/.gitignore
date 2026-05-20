@@ -1,0 +1,75 @@
+# ============================================================
+# HistoriClip - Strict Whitelist Git Ignore
+# ============================================================
+# This file is set to ignore EVERYTHING by default, and only 
+# explicitly include the exact folders/files you specified.
+
+# 1. Ignore EVERYTHING in the root directory first
+/*
+
+# 2. ✨ ACTIVELY INCLUDE your requested folders and files ✨
+!/backend/
+!/frontend-react/
+!/python-ai-service/
+
+!/.env.example
+!/start.sh
+!/stop.sh
+!/windows_start.bat
+!/windows_stop.bat
+!/README.md
+
+# Also include this .gitignore file itself so it is saved to GitHub
+!/.gitignore
+
+# ============================================================
+# 3. 🗑️ IGNORE auto-generated files INSIDE the included folders
+# ============================================================
+
+# ─── 'other folders' (Explicitly Ignored) ───────────
+/other folders/
+
+# ─── Node.js (Frontend & Backend caches) ──────────
+node_modules/
+dist/
+build/
+.vite/
+npm-debug.log*
+
+# ─── Python Caches & Virtual Envs ─────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+env/
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# ─── AI Models & Huge Cache Files ─────────────────
+python-ai-service/models/
+python-ai-service/cache/
+
+# ─── Database and Uploaded/Generated Media ────────
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/src/public/generated/
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# ─── IDEs, OS Files, and Logs ─────────────────────
+backend/logs/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+backend.log
+ai_service.log
+frontend.log
+
+# ─── Actual .env file ─────────────────────────────
+.env
+

@@ -40,14 +40,9 @@ for %%P in (5000 5001 5173) do (
 echo  Done.
 
 :: ──────────────────────────────────────────────────────────
-:: STEP 3: Kill any remaining node.exe and python.exe
-::         that were started by HistoriClip (safety net)
+:: STEP 3: Final checks (avoid killing unrelated processes)
 :: ──────────────────────────────────────────────────────────
-echo  [3/3] Cleaning up remaining processes...
-
-:: Kill node processes (backend + frontend)
-taskkill /IM "node.exe" /F >nul 2>&1
-
+echo  [3/3] Final checks...
 echo  Done.
 
 echo.

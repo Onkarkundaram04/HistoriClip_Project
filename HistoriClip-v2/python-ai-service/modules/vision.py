@@ -664,6 +664,8 @@ def analyze_image(image_path: str) -> dict:
                 
                 name = _resolve_landmark_name(loc)
                 identified = _is_meaningful_name(name) and name != UNIDENTIFIED
+                if loc and identified:
+                    loc['name'] = name
                 print(f"[Vision] Tier 3: Resolved Name (after filtering) → {name}")
 
                 # ── TIER 3.5: Gemini VLM with geographic context ──

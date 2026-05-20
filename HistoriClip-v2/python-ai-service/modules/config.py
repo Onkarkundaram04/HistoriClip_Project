@@ -25,6 +25,18 @@ BASE_DIR = Path(__file__).parent.parent          # python-ai-service/
 DATA_DIR = BASE_DIR / "data"
 BACKEND_UPLOADS = BASE_DIR.parent / "backend" / "uploads"
 
+# ─────────────────────────────────────────────────────────────
+# Force HuggingFace Offline Caching to Local Setup
+# ─────────────────────────────────────────────────────────────
+# Prevents downloading massive models to a hidden C: drive cache.
+# Absolute paths are derived dynamically from __file__ to guarantee
+# 100% portability without hardcoding paths.
+HF_MODELS_DIR = BASE_DIR / "models"
+HF_MODELS_DIR.mkdir(parents=True, exist_ok=True)
+os.environ['HF_HOME'] = str(HF_MODELS_DIR.resolve())
+os.environ['HUGGINGFACE_HUB_CACHE'] = str(HF_MODELS_DIR.resolve())
+os.environ['TRANSFORMERS_CACHE'] = str(HF_MODELS_DIR.resolve())
+
 
 # ─────────────────────────────────────────────────────────────
 # Sub-Configs
