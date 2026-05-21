@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-	<a href="./HistoriClip-v2/ENVIRONMENT_SETUP.md"><img src="https://img.shields.io/badge/Setup-Environment%20Guide-0F172A?style=flat-square&logo=readthedocs&logoColor=white" alt="Setup Guide" /></a>
+	<a href="./HistoriClip-v2/INSTALLATION.md"><img src="https://img.shields.io/badge/Setup-Environment%20Guide-0F172A?style=flat-square&logo=readthedocs&logoColor=white" alt="Setup Guide" /></a>
 	<a href="https://github.com/Onkarkundaram04/HistoriClip_Project/commits"><img src="https://img.shields.io/github/last-commit/Onkarkundaram04/HistoriClip_Project?style=flat-square&logo=github&logoColor=white&color=1E293B" alt="Last Commit" /></a>
 	<img src="https://img.shields.io/github/repo-size/Onkarkundaram04/HistoriClip_Project?style=flat-square&logo=github&logoColor=white&color=0369A1&label=size" alt="Repository Size" />
 	<a href="https://www.repostatus.org/#active"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active" /></a>
@@ -46,7 +46,7 @@
 ## Production Pipeline
 
 <p align="center">
-  <img src="HistoriClip-v2/diagrams/production_pipeline.png" alt="Production Pipeline Diagram" width="100%" />
+  <img src="project_diagrams/production_pipeline.png" alt="Production Pipeline Diagram" width="100%" />
 </p>
 
 
@@ -69,7 +69,7 @@
 ## System Blueprint
 
 <p align="center">
-  <img src="HistoriClip-v2/diagrams/system_blueprint.png" alt="System Blueprint Diagram" width="100%" />
+  <img src="project_diagrams/system_blueprint.png" alt="System Blueprint Diagram" width="100%" />
 </p>
 
 | Layer | Responsibility | Core Stack |
@@ -82,7 +82,7 @@
 
 ## Quick Launch
 
-1. Read setup guide: [`HistoriClip-v2/ENVIRONMENT_SETUP.md`](./HistoriClip-v2/ENVIRONMENT_SETUP.md)
+1. Read setup guide: [`HistoriClip-v2/INSTALLATION.md`](./HistoriClip-v2/INSTALLATION.md)
 2. Install prerequisites: `Miniconda`, `CUDA 12.1`, `Node 18/20`, `MySQL`, `FFmpeg`
 3. Add API keys in `.env`: `Gemini`, `Google Vision`, `Mapillary`
 4. Start services:

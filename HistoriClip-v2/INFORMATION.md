@@ -1,15 +1,16 @@
 <div align="center">
 
 # 🎞️ HistoriClip
-### *Autonomous AI-Powered Historical Documentary Video Generator from Street-Level Imagery*
 
-[![Node.js](https://img.shields.io/badge/Node.js-18.x%20%7C%2020.x-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![React](https://img.shields.io/badge/React-19.x-61DAFB?style=flat-square&logo=react&logoColor=black)](https://reactjs.org/)
-[![Python](https://img.shields.io/badge/Python-3.11.14-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.5.1-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)](https://pytorch.org/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?style=flat-square&logo=mysql&logoColor=white)](https://www.mysql.com/)
+**An AI-Powered Historical Documentary Video Generator from Street-Level Imagery**
 
-[✨ Key Features](#-key-features) • [🏗️ System Architecture](#-system-architecture) • [🛠️ Tech Stack](#-tech-stack) • [📥 Installation Guide](./INSTALLATION.md) • [👥 Active Team](#-team)
+[![Node.js](https://img.shields.io/badge/Node.js-18.x%20%7C%2020.x-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-19.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
+[![Python](https://img.shields.io/badge/Python-3.11.14-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.5.1-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+
+[Features](#-key-features) • [Architecture](#-system-architecture) • [Tech Stack](#-tech-stack) • [Installation](#-getting-started) • [Team](#-team)
 
 </div>
 
@@ -68,7 +69,7 @@ Deploying the whole ecosystem properly requires specific system dependencies (Co
 
 We have prepared a **bulletproof, comprehensive step-by-step guide** for configuring the project on Windows, Linux, and macOS.
 
-👉 **[Read the Complete Installation Guide here](./INSTALLATION.md)** 👈
+👉 **[Read the Complete Environment Setup Guide here](./ENVIRONMENT_SETUP.md)** 👈
 
 ### Quick Overview of Setup
 1. Verify prerequisites (`Miniconda`, `CUDA 12.1`, `Node 18/20`, `MySQL`, `FFmpeg`).
