@@ -18,6 +18,7 @@
 !/windows_start.bat
 !/windows_stop.bat
 !/README.md
+!/INSTALLATION.md
 
 # Also include this .gitignore file itself so it is saved to GitHub
 !/.gitignore
