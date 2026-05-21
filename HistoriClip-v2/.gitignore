@@ -19,6 +19,7 @@
 !/windows_stop.bat
 !/INFORMATION.md
 !/INSTALLATION.md
+!/project_diagrams/
 
 # Also include this .gitignore file itself so it is saved to GitHub
 !/.gitignore

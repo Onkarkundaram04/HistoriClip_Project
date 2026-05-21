@@ -46,7 +46,7 @@
 ## Production Pipeline
 
 <p align="center">
-  <img src="project_diagrams/production_pipeline.png" alt="Production Pipeline Diagram" width="100%" />
+  <img src="HistoriClip-v2/project_diagrams/production_pipeline.png" alt="Production Pipeline Diagram" width="100%" />
 </p>
 
 
@@ -69,7 +69,7 @@
 ## System Blueprint
 
 <p align="center">
-  <img src="project_diagrams/system_blueprint.png" alt="System Blueprint Diagram" width="100%" />
+  <img src="HistoriClip-v2/project_diagrams/system_blueprint.png" alt="System Blueprint Diagram" width="100%" />
 </p>
 
 | Layer | Responsibility | Core Stack |
